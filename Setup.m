@@ -1,33 +1,16 @@
-Mapper.isTransparent = false;
-Channel.isTransparent = false;
-Mapper.ModulationOrder = 4;
-BER.BERNumRateDigits = 8;
-BER.FERNumRateDigits = 5;
-BER.BERPrecision = 5;
-% BER.h2Precision = 0;
-% BER.h2dBInitStep = 1;
-% BER.h2dBMaxStep = 1;
-% BER.h2dBMinStep = 1;
+% === Вариант 2: QPSK, R = 3/4, beta = 0.20, pilots = on ===
+Source.NumBitsPerFrame = 48600;     % K_bch
+Mapper.isTransparent   = false;
+Mapper.Type            = 'PSK';
+Mapper.ModulationOrder = 4;         % QPSK
+Mapper.PhaseOffset     = pi/4;      % DVB-S2 QPSK: phi = pi/4
+Mapper.SymbolMapping   = 'Gray';
+Channel.isTransparent  = false;
+Encoder.isTransparent  = true;
+Interleaver.isTransparent = true;
+Sig.isTransparent      = true;
+BER.BERNumRateDigits   = 8;
+BER.FERNumRateDigits   = 5;
+BER.BERPrecision       = 5;
 
 % End of Params
-
-
-Mapper.isTransparent = false;
-Channel.isTransparent = false;
-Mapper.ModulationOrder = 16;
-
-% End of Params
-
-
-Source.NumBitsPerFrame = 2*3*4*5*8;
-Mapper.Type = 'PSK';
-Mapper.isTransparent = false;
-Channel.isTransparent = false;
-Mapper.ModulationOrder = 8;
-
-% End of Params
-Source.NumBitsPerFrame = 2*3*4*5*8;
-% Mapper.Type = 'PSK';
-Mapper.isTransparent = false;
-Channel.isTransparent = false;
-Mapper.ModulationOrder = 64;
