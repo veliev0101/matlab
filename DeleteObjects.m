@@ -4,7 +4,7 @@ function DeleteObjects(Objs, Ruler)
 % параметров
 
     for k = 1:Ruler.NumWorkers
-        delete(Objs{k}.Source);
+        delete(Objs{k}.Source);      % <-- здесь теперь ClassDVBS2Source
         delete(Objs{k}.Encoder);
         delete(Objs{k}.Interleaver);
         delete(Objs{k}.Mapper);
