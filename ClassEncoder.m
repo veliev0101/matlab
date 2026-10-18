@@ -1,38 +1,32 @@
 classdef ClassEncoder < handle
-    properties (SetAccess = private) % Переменные из параметров
-        % Нужно ли выполнять кодирование и декодирование
-            isTransparent;
-        % Переменная управления языком вывода информации для пользователя
-            LogLanguage;
+    % ClassEncoder вЂ” РџРѕРјРµС…РѕСѓСЃС‚РѕР№С‡РёРІРѕРµ РєР°СЃРєР°РґРЅРѕРµ РєРѕРґРёСЂРѕРІР°РЅРёРµ (BCH + LDPC)
+    
+    properties
+        BchEncoder   % РћР±СЉРµРєС‚ BCH-РєРѕРґРµСЂР°
+        LdpcEncoder  % РћР±СЉРµРєС‚ LDPC-РєРѕРґРµСЂР°
+        CodeRate     % РЎРєРѕСЂРѕСЃС‚СЊ РєРѕРґРёСЂРѕРІР°РЅРёСЏ (РґР»СЏ РљРѕРјР°РЅРґС‹ 2: '3/4')
     end
-    properties (SetAccess = private) % Вычисляемые переменные
-    end
+    
     methods
-        function obj = ClassEncoder(Params, LogLanguage) % Конструктор
-            % Выделим поля Params, необходимые для инициализации
-                Encoder  = Params.Encoder;
-            % Инициализация значений переменных из параметров
-                obj.isTransparent = Encoder.isTransparent;
-            % Переменная LogLanguage
-                obj.LogLanguage = LogLanguage;
-        end
-        function OutData = StepTx(obj, InData)
-            if obj.isTransparent
-                OutData = InData;
-                return
+        function obj = ClassEncoder(codeRate)
+            if nargin < 1
+                codeRate = '3/4';
             end
+            obj.CodeRate = codeRate;
             
-            % Здесь должна быть процедура кодирования
-            OutData = InData;
+            % РќР°СЃС‚СЂРѕР№РєР° BCH РєРѕРґРµСЂР° РґР»СЏ СЃРєРѕСЂРѕСЃС‚Рё 3/4 (Normal Frame: K_bch=48408, N_bch=48600)
+            obj.BchEncoder = comm.BCHEncoder('CodewordLength', 48600, 'MessageLength', 48408);
+            
+            % РќР°СЃС‚СЂРѕР№РєР° СЃС‚Р°РЅРґР°СЂС‚РЅРѕРіРѕ DVB-S2 LDPC РєРѕРґРµСЂР° MATLAB
+            obj.LdpcEncoder = comm.DVBS2LDPCEncoder('CodeRate', obj.CodeRate);
         end
-        function OutData = StepRx(obj, InData)
-            if obj.isTransparent
-                OutData = InData;
-                return
-            end
+        
+        function fecframe = Process(obj, bbframe)
+            % 1. Р’РЅРµС€РЅРµРµ BCH-РєРѕРґРёСЂРѕРІР°РЅРёРµ
+            bch_encoded = obj.BchEncoder(bbframe);
             
-            % Здесь должна быть процедура декодирования
-            OutData = InData;
+            % 2. Р’РЅСѓС‚СЂРµРЅРЅРµРµ LDPC-РєРѕРґРёСЂРѕРІР°РЅРёРµ
+            fecframe = obj.LdpcEncoder(bch_encoded);
         end
     end
 end
