@@ -1,38 +1,43 @@
 classdef ClassInterleaver < handle
-    properties (SetAccess = private) % Переменные из параметров
-        % Нужно ли выполнять перемежение и деперемежение
-            isTransparent;
-        % Переменная управления языком вывода информации для пользователя
-            LogLanguage;
+    % ClassInterleaver вЂ” РљР»Р°СЃСЃ РґР»СЏ СЂРµР°Р»РёР·Р°С†РёРё Р±Р»РѕС‡РЅРѕРіРѕ РїРµСЂРµРјРµР¶РµРЅРёСЏ РІ DVB-S2
+    
+    properties
+        InterleaverOn % Р¤Р»Р°Рі РІРєР»СЋС‡РµРЅРёСЏ РїРµСЂРµРјРµР¶РёС‚РµР»СЏ (1/0)
     end
-    properties (SetAccess = private) % Вычисляемые переменные
-    end
+    
     methods
-        function obj = ClassInterleaver(Params, LogLanguage) % Конструктор
-            % Выделим поля Params, необходимые для инициализации
-                Interleaver  = Params.Interleaver;
-            % Инициализация значений переменных из параметров
-                obj.isTransparent = Interleaver.isTransparent;
-            % Переменная LogLanguage
-                obj.LogLanguage = LogLanguage;
-        end
-        function OutData = StepTx(obj, InData)
-            if obj.isTransparent
-                OutData = InData;
-                return
+        function obj = ClassInterleaver(InterleaverOn)
+            if nargin > 0
+                obj.InterleaverOn = InterleaverOn;
+            else
+                obj.InterleaverOn = 1;
             end
-            
-            % Здесь должна быть процедура перемежения
-            OutData = InData;
         end
-        function OutData = StepRx(obj, InData)
-            if obj.isTransparent
-                OutData = InData;
-                return
-            end
+        
+        function outBits = Process(obj, inBits, modType, n_ldpc)
+            % Process вЂ” РџРµСЂРµРјРµР¶РµРЅРёРµ Р±РёС‚ РєР°РґСЂР° FECFRAME
             
-            % Здесь должна быть процедура деперемежения
-            OutData = InData;
+            % Р”Р»СЏ РљРѕРјР°РЅРґС‹ 2 (QPSK) РїРµСЂРµРјРµР¶РµРЅРёРµ РЅРµ РїСЂРёРјРµРЅСЏРµС‚СЃСЏ РїРѕ СЃС‚Р°РЅРґР°СЂС‚Сѓ DVB-S2
+            if strcmp(modType, 'QPSK') || ~obj.InterleaverOn
+                outBits = inBits; % РџСЂРѕРїСѓСЃРє Р±РµР· РёР·РјРµРЅРµРЅРёР№
+            else
+                % Р›РѕРіРёРєР° РґР»СЏ 8PSK / 16APSK / 32APSK (РґР»СЏ СѓРЅРёРІРµСЂСЃР°Р»СЊРЅРѕСЃС‚Рё)
+                switch modType
+                    case '8PSK'
+                        numCols = 3;
+                    case '16APSK'
+                        numCols = 4;
+                    case '32APSK'
+                        numCols = 5;
+                    otherwise
+                        numCols = 1;
+                end
+                
+                numRows = n_ldpc / numCols;
+                % Р—Р°РїРёСЃСЊ РїРѕ СЃС‚РѕР»Р±С†Р°Рј, С‡С‚РµРЅРёРµ РїРѕ СЃС‚СЂРѕРєР°Рј
+                interleavingMatrix = reshape(inBits, numRows, numCols);
+                outBits = reshape(interleavingMatrix', [], 1);
+            end
         end
     end
 end
