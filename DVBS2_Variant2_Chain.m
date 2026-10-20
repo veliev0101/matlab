@@ -34,7 +34,7 @@ function [BBFRAME_scrambled, Info] = DVBS2_Variant2_Chain(NumTSFrames, isVerbose
     Params.Pilots          = true;
     Params.FECFRAMEType    = 'normal';
     Params.n_ldpc          = 64800;
-    Params.K_bch           = 48600;
+    Params.K_bch           = 48408;
     Params.N_bch           = 48600;
     Params.BCH_t           = 12;
 
