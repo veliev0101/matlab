@@ -1,24 +1,25 @@
 function [Objs, Ruler] = PrepareObjects(Params, ParamsNum, NumParams, ...
     LogLanguage)
 % 
-% Функция инициализации объектов
+% Р¤СѓРЅРєС†РёСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РѕР±СЉРµРєС‚РѕРІ
 
-    % Инициализация cell-массива для хранения объектов главного цикла
+    % РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ cell-РјР°СЃСЃРёРІР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РѕР±СЉРµРєС‚РѕРІ РіР»Р°РІРЅРѕРіРѕ С†РёРєР»Р°
         Objs = cell(Params.Common.NumWorkers, 1);
         
-    % Цикл инициализации объектов главного цикла
+    % Р¦РёРєР» РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РѕР±СЉРµРєС‚РѕРІ РіР»Р°РІРЅРѕРіРѕ С†РёРєР»Р°
         for k = 1:Params.Common.NumWorkers
-            % === ЗАМЕНА: DVB-S2 источник вместо обычного ClassSource ===
+            % === Р—РђРњР•РќРђ: DVB-S2 РёСЃС‚РѕС‡РЅРёРє РІРјРµСЃС‚Рѕ РѕР±С‹С‡РЅРѕРіРѕ ClassSource ===
             Objs{k}.Source = ClassDVBS2Source(Params, LogLanguage);
-            % Objs{k}.Source = ClassSource(Params, LogLanguage);  % старое
+            % Objs{k}.Source = ClassSource(Params, LogLanguage);  % СЃС‚Р°СЂРѕРµ
             Objs{k}.Encoder     = ClassEncoder(Params, LogLanguage);
             Objs{k}.Interleaver = ClassInterleaver(Params, LogLanguage);
             Objs{k}.Mapper      = ClassMapper(Params, LogLanguage);
+            Objs{k}.PLFramer    = ClassPLFramer(Params, LogLanguage);
             Objs{k}.Sig         = ClassSig(Params, LogLanguage);
             Objs{k}.Channel     = ClassChannel(Params, Objs{k}, LogLanguage);
             Objs{k}.Stat        = ClassStat(LogLanguage);
         end
     
-    % Инициализация Ruler
+    % РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Ruler
         Ruler = ClassBERRuler(Params, ParamsNum, NumParams, LogLanguage);
 end
