@@ -1,13 +1,14 @@
 function DeleteObjects(Objs, Ruler)
 %
-% Удаление всех объектов, используемых в цикле обработки одного набора
-% параметров
+% Г“Г¤Г Г«ГҐГ­ГЁГҐ ГўГ±ГҐГµ Г®ГЎГєГҐГЄГІГ®Гў, ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГ¬Г»Гµ Гў Г¶ГЁГЄГ«ГҐ Г®ГЎГ°Г ГЎГ®ГІГЄГЁ Г®Г¤Г­Г®ГЈГ® Г­Г ГЎГ®Г°Г 
+% ГЇГ Г°Г Г¬ГҐГІГ°Г®Гў
 
     for k = 1:Ruler.NumWorkers
-        delete(Objs{k}.Source);      % <-- здесь теперь ClassDVBS2Source
+        delete(Objs{k}.Source);      % <-- Г§Г¤ГҐГ±Гј ГІГҐГЇГҐГ°Гј ClassDVBS2Source
         delete(Objs{k}.Encoder);
         delete(Objs{k}.Interleaver);
         delete(Objs{k}.Mapper);
+        delete(Objs{k}.PLFramer);
         delete(Objs{k}.Sig);
         delete(Objs{k}.Channel);
         delete(Objs{k}.Stat);
