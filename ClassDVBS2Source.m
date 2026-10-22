@@ -26,7 +26,7 @@ classdef ClassDVBS2Source < handle
                 obj.Params.RollOff         = 0.20;
                 obj.Params.Pilots          = true;
                 obj.Params.n_ldpc          = 64800;
-                obj.Params.K_bch           = 48600;
+                obj.Params.K_bch           = 48408;
                 obj.Params.BCH_t           = 12;
                 obj.Params.UPL_bits        = 1504;
                 obj.Params.BBHEADERBits    = 80;
